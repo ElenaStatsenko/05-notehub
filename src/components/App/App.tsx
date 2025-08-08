@@ -1,16 +1,17 @@
-
+import css from './App.module.css';
 
 export default function App() {
   
 
   return (
-    <>
-     
-        
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <div className={css.app}>
+	<header className={css.toolbar}>
+    <p> Hello </p>
+		{/* Компонент SearchBox */}
+		{/* Пагінація */}
+		{/* Кнопка створення нотатки */}
+  </header>
+</div>
   )
 }
 
