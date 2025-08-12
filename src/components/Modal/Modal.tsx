@@ -1,12 +1,15 @@
 import css from "./Modal.module.css";
 import { useEffect } from "react";
 import { createPortal } from "react-dom";
-interface ModalProps{
-    onClose:() => void
+
+
+interface ModalProps {
+  onClose: () => void;
+  children: React.ReactNode;
 }
 
-export default function Modal({onClose}:ModalProps) {
-    const handleBackdropClick = (event: React.MouseEvent<HTMLDivElement>) => {
+export default function Modal({ onClose, children }: ModalProps) {
+  const handleBackdropClick = (event: React.MouseEvent<HTMLDivElement>) => {
     if (event.target === event.currentTarget) {
       onClose();
     }
@@ -27,10 +30,15 @@ export default function Modal({onClose}:ModalProps) {
       document.body.style.overflow = "";
     };
   }, [onClose]);
-    
+
   return createPortal(
-    <div className={css.backdrop} role="dialog" onClick={handleBackdropClick} aria-modal="true">
-      <div className={css.modal}>{/* Тут буде контент модалки */}</div>
+    <div
+      className={css.backdrop}
+      role="dialog"
+      onClick={handleBackdropClick}
+      aria-modal="true"
+    >
+      <div className={css.modal}>{children}</div>
     </div>,
     document.body
   );

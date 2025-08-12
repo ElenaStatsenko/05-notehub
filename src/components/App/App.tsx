@@ -1,11 +1,13 @@
 import css from "./App.module.css";
 
-import { useQuery, keepPreviousData } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData } from "@tanstack/react-query";
 import { useState } from "react";
 import Pagination from "../Pagination/Pagination";
 import { fetchNotes } from "../../services/noteService";
 import Notelist from "../NoteList/NoteList";
 import Modal from "../Modal/Modal";
+import NoteForm from "../NoteForm/NoteForm";
 
 export default function App() {
   const [page, setPage] = useState(1);
@@ -34,10 +36,16 @@ export default function App() {
             setPage={setPage}
           />
         )}
-        <button className={css.button} onClick={openModal}>Create note +</button>
+        <button className={css.button} onClick={openModal}>
+          Create note +
+        </button>
       </header>
       <Notelist notes={data?.notes} />
-      {isModalOpen && <Modal onClose={closeModal} />}
+      {isModalOpen && (
+  <Modal onClose={closeModal}>
+    <NoteForm onCancel={closeModal} />
+  </Modal>
+)}
     </div>
   );
 }
