@@ -1,5 +1,7 @@
 import css from "./NoteForm.module.css";
-import { Formik, Form, Field, FormikHelpers } from "formik";
+import { Formik, Form, Field } from "formik";
+import type { FormikHelpers } from "formik";
+
 interface NoteFormProps {
   onCancel: () => void;
 }
@@ -9,7 +11,7 @@ interface ValuesFormProps {
   tag: "Todo" | "Work" | "Personal" | "Meeting" | "Shopping";
 }
 const valuesForm: ValuesFormProps = {
-  title: "назва",
+  title: "",
   content: "",
   tag: "Todo",
 };
