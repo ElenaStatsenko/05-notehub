@@ -1,6 +1,7 @@
 import css from "./NoteForm.module.css";
 import { Formik, Form, Field } from "formik";
 import type { FormikHelpers } from "formik";
+import * as Yup from "yup";
 
 interface NoteFormProps {
   onCancel: () => void;
@@ -15,7 +16,16 @@ const valuesForm: ValuesFormProps = {
   content: "",
   tag: "Todo",
 };
-
+const FormSchema = Yup.object().shape({
+  title: Yup.string()
+    .min(3, "Name must be at least 2 characters")
+    .max(500, "Name is too long")
+    .required("Name is required"),
+  content: Yup.string().max(50, "Name is too long"),
+  tag: Yup.mixed<ValuesFormProps["tag"]>()
+    .oneOf(["Todo", "Work", "Personal", "Meeting", "Shopping"], "Invalid tag")
+    .required("Tag is required"),
+});
 export default function NoteForm({ onCancel }: NoteFormProps) {
   const handleSubmit = (
     values: ValuesFormProps,
@@ -25,7 +35,11 @@ export default function NoteForm({ onCancel }: NoteFormProps) {
     actions.resetForm();
   };
   return (
-    <Formik initialValues={valuesForm} onSubmit={handleSubmit}>
+    <Formik
+      initialValues={valuesForm}
+      validationSchema={FormSchema}
+      onSubmit={handleSubmit}
+    >
       <Form className={css.form}>
         <div className={css.formGroup}>
           <label htmlFor="title">Title</label>
@@ -36,6 +50,7 @@ export default function NoteForm({ onCancel }: NoteFormProps) {
         <div className={css.formGroup}>
           <label htmlFor="content">Content</label>
           <Field
+            as="textarea"
             id="content"
             name="content"
             rows={8}
