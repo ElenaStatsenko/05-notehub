@@ -9,22 +9,25 @@ import Notelist from "../NoteList/NoteList";
 import Modal from "../Modal/Modal";
 import NoteForm from "../NoteForm/NoteForm";
 import SearchBox from "../SearchBox/SearchBox";
-import { useDebouncedCallback } from 'use-debounce';
+import Loader from "../Loader/Loader";
+import ErrorMessage from "../ErrorMessage/ErrorMessage";
+import { useDebouncedCallback } from "use-debounce";
 
 export default function App() {
   const [page, setPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [search, setSearch] = useState("");
 
-   const debouncedSetSearch = useDebouncedCallback((value: string) => {
+  const debouncedSetSearch = useDebouncedCallback((value: string) => {
     setSearch(value);
   }, 500);
 
-  const { data, isSuccess } = useQuery({
+  const { data, isLoading, isError, isSuccess } = useQuery({
     queryKey: ["myFetchKey", page, search],
     queryFn: () => fetchNotes(page, search),
     placeholderData: keepPreviousData,
   });
+
   const closeModal = () => {
     setIsModalOpen(false);
   };
@@ -36,7 +39,8 @@ export default function App() {
   return (
     <div className={css.app}>
       <header className={css.toolbar}>
-        <SearchBox onSearch={debouncedSetSearch}/>
+        <SearchBox onSearch={debouncedSetSearch} />
+
         {isSuccess && data.totalPages > 1 && (
           <Pagination
             pageCount={data?.totalPages ?? 0}
@@ -44,16 +48,23 @@ export default function App() {
             setPage={setPage}
           />
         )}
+
         <button className={css.button} onClick={openModal}>
           Create note +
         </button>
       </header>
+
       <Notelist notes={data?.notes} />
+
       {isModalOpen && (
         <Modal onClose={closeModal}>
           <NoteForm onCancel={closeModal} />
         </Modal>
       )}
+
+      {isLoading && <Loader />}
+
+      {isError && <ErrorMessage />}
     </div>
   );
 }
