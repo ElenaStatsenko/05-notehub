@@ -1,9 +1,11 @@
-import axios from 'axios';
-import type Note from '../types/note';
+import axios from "axios";
+import type Note from "../types/note";
+import type { ValuesFormProps } from "../types/note";
+
 export default interface NotesResponse {
   notes: Note[];
   totalPages: number;
-  page: number,
+  page: number;
 }
 
 const myKey = import.meta.env.VITE_NOTEHUB_TOKEN;
@@ -14,14 +16,19 @@ export const notehubAPI = axios.create({
   },
 });
 
-export const fetchNotes = async (page: number= 1): Promise<NotesResponse> => {
+export const fetchNotes = async (page: number = 1): Promise<NotesResponse> => {
   const { data } = await notehubAPI.get<NotesResponse>("/notes", {
     params: {
       page,
       perPage: 12,
-      
     },
   });
 
   return data;
+};
+export const createNote = async (note: ValuesFormProps) => {
+  const response = await notehubAPI.post<Note>("/notes", note);
+
+  
+  return response.data
 };
