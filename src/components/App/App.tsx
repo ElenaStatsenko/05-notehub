@@ -8,14 +8,21 @@ import { fetchNotes } from "../../services/noteService";
 import Notelist from "../NoteList/NoteList";
 import Modal from "../Modal/Modal";
 import NoteForm from "../NoteForm/NoteForm";
+import SearchBox from "../SearchBox/SearchBox";
+import { useDebouncedCallback } from 'use-debounce';
 
 export default function App() {
   const [page, setPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [search, setSearch] = useState("");
+
+   const debouncedSetSearch = useDebouncedCallback((value: string) => {
+    setSearch(value);
+  }, 500);
 
   const { data, isSuccess } = useQuery({
-    queryKey: ["myFetchKey", page],
-    queryFn: () => fetchNotes(page),
+    queryKey: ["myFetchKey", page, search],
+    queryFn: () => fetchNotes(page, search),
     placeholderData: keepPreviousData,
   });
   const closeModal = () => {
@@ -29,6 +36,7 @@ export default function App() {
   return (
     <div className={css.app}>
       <header className={css.toolbar}>
+        <SearchBox onSearch={debouncedSetSearch}/>
         {isSuccess && data.totalPages > 1 && (
           <Pagination
             pageCount={data?.totalPages ?? 0}
@@ -42,10 +50,10 @@ export default function App() {
       </header>
       <Notelist notes={data?.notes} />
       {isModalOpen && (
-  <Modal onClose={closeModal}>
-    <NoteForm onCancel={closeModal} />
-  </Modal>
-)}
+        <Modal onClose={closeModal}>
+          <NoteForm onCancel={closeModal} />
+        </Modal>
+      )}
     </div>
   );
 }

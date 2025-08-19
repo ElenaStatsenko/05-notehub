@@ -16,11 +16,12 @@ export const notehubAPI = axios.create({
   },
 });
 
-export const fetchNotes = async (page: number = 1): Promise<NotesResponse> => {
+export const fetchNotes = async (page: number = 1,  search: string = ""): Promise<NotesResponse> => {
   const { data } = await notehubAPI.get<NotesResponse>("/notes", {
     params: {
       page,
       perPage: 12,
+       search: search || undefined,
     },
   });
 
