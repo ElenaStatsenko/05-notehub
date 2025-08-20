@@ -5,7 +5,7 @@ import type { FormikHelpers } from "formik";
 import * as Yup from "yup";
 import type { ValuesFormProps } from "../../types/note";
 import { createNote } from "../../services/noteService";
-
+import ErrorMessageComponent from "../ErrorMessageComponent/ErrorMessageComponent";
 interface NoteFormProps {
   onCancel: () => void;
 }
@@ -18,12 +18,12 @@ const valuesForm: ValuesFormProps = {
 
 const FormSchema = Yup.object().shape({
   title: Yup.string()
-    .min(3, "Name must be at least 2 characters")
-    .max(500, "Name is too long")
+    .min(3, "Name must be at least 3 characters")
+    .max(50, "Name is too long")
     .required("Name is required"),
-  content: Yup.string().max(50, "Name is too long"),
+  content: Yup.string().max(500),
   tag: Yup.mixed<ValuesFormProps["tag"]>()
-    .oneOf(["Todo", "Work", "Personal", "Meeting", "Shopping"], "Invalid tag")
+    .oneOf(["Work", "Personal", "Meeting", "Shopping", "Todo"], "Invalid tag")
     .required("Tag is required"),
 });
 
@@ -34,9 +34,7 @@ export default function NoteForm({ onCancel }: NoteFormProps) {
     mutationFn: (note: ValuesFormProps) => createNote(note),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["myFetchKey"] });
-    },
-    onError: (error) => {
-      console.error(error);
+      onCancel();
     },
   });
 
@@ -92,6 +90,7 @@ export default function NoteForm({ onCancel }: NoteFormProps) {
             Create note
           </button>
         </div>
+        {mutation.isError && <ErrorMessageComponent />}
       </Form>
     </Formik>
   );

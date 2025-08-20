@@ -1,6 +1,6 @@
-import css from "./ErrorMessage.module.css";
+import css from "./ErrorMessageComponent.module.css";
 
-export default function ErrorMessage() {
+export default function ErrorMessageComponent() {
   
   return (
     <p className={css.text}>
