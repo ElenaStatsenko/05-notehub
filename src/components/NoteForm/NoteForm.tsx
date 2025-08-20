@@ -13,7 +13,7 @@ interface NoteFormProps {
 const valuesForm: ValuesFormProps = {
   title: "",
   content: "",
-  tag: "Todo",
+  tag: "Work",
 };
 
 const FormSchema = Yup.object().shape({
@@ -33,7 +33,7 @@ export default function NoteForm({ onCancel }: NoteFormProps) {
   const mutation = useMutation({
     mutationFn: (note: ValuesFormProps) => createNote(note),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["myFetchKey"] });
+      queryClient.invalidateQueries({ queryKey: ["notes"] });
       onCancel();
     },
   });

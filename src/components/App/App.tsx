@@ -2,7 +2,8 @@ import css from "./App.module.css";
 
 import { useQuery } from "@tanstack/react-query";
 import { keepPreviousData } from "@tanstack/react-query";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
 import Pagination from "../Pagination/Pagination";
 import { fetchNotes } from "../../services/noteService";
 import Notelist from "../NoteList/NoteList";
@@ -23,10 +24,14 @@ export default function App() {
   }, 500);
 
   const { data, isLoading, isError, isSuccess } = useQuery({
-    queryKey: ["myFetchKey", page, search],
+    queryKey: ["notes", page, search],
     queryFn: () => fetchNotes(page, search),
     placeholderData: keepPreviousData,
   });
+
+  useEffect(() => {
+    setPage(1);
+  }, [search]);
 
   const closeModal = () => {
     setIsModalOpen(false);
